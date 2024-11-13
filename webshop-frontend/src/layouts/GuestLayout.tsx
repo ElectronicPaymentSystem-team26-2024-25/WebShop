@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider.tsx";
+import { Toaster } from "@/components/ui/toaster.tsx";
 
 const GuestLayout = () => {
   const { token } = useStateContext();
@@ -9,6 +10,7 @@ const GuestLayout = () => {
   return (
     <div>
       <Outlet />
+      <Toaster />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,12 +13,72 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { User } from "@/models/UserModel";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Component() {
   const [activeTab, setActiveTab] = useState("login");
+  const { toast } = useToast();
+
+  const [registerData, setRegisterData] = useState<User>({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRegisterData({ ...registerData, [e.target.id]: e.target.value });
+  };
+
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginData({ ...loginData, [e.target.id]: e.target.value });
+  };
+
+  const registerUser = async (userData: User): Promise<User> => {
+    try {
+      const response = await axios.post<User>(
+        "http://localhost:8080/api/register",
+        userData
+      );
+      console.log("User registered successfully:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error(
+        "Error registering user:",
+        error.response ? error.response.data : error.message
+      );
+      throw error;
+    }
+  };
+
+  const handleRegisterSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      await registerUser(registerData);
+      setActiveTab("login");
+      toast({
+        title: "Registration Successful",
+        description:
+          "Your account has been created. Please log in to continue.",
+      });
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
+  };
+
+  const handleLoginSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    console.log("Login Data:", loginData);
+    // Add your login logic here
+  };
 
   return (
-    <div className="flex items-center justify-center  md:h-screen h-2/3 md:w-2/5 w-full  ">
+    <div className="flex items-center justify-center md:h-screen h-2/3 md:w-2/5 w-full">
       <Card className="w-full max-w-md mx-2 my-10">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
@@ -39,7 +99,7 @@ export default function Component() {
               <TabsTrigger value="register">Register</TabsTrigger>
             </TabsList>
             <TabsContent value="login">
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleLoginSubmit}>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -47,11 +107,19 @@ export default function Component() {
                     type="email"
                     placeholder="m@example.com"
                     required
+                    value={loginData.email}
+                    onChange={handleLoginChange}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={loginData.password}
+                    onChange={handleLoginChange}
+                  />
                 </div>
                 <Button type="submit" className="w-full">
                   Login
@@ -59,10 +127,16 @@ export default function Component() {
               </form>
             </TabsContent>
             <TabsContent value="register">
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleRegisterSubmit}>
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" placeholder="John Doe" required />
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    placeholder="John Doe"
+                    required
+                    value={registerData.username}
+                    onChange={handleRegisterChange}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
@@ -71,15 +145,19 @@ export default function Component() {
                     type="email"
                     placeholder="m@example.com"
                     required
+                    value={registerData.email}
+                    onChange={handleRegisterChange}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm Password</Label>
-                  <Input id="confirm-password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={registerData.password}
+                    onChange={handleRegisterChange}
+                  />
                 </div>
                 <Button type="submit" className="w-full">
                   Register
