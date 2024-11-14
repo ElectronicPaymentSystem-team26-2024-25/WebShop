@@ -3,6 +3,7 @@ package com.webshop.controller;
 import com.webshop.model.User;
 import com.webshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,19 @@ public class UserController {
         // You can add validation here, such as checking if the username/email already exists
         User savedUser = userService.saveUser(user);
         return ResponseEntity.ok(savedUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> loginUser(@RequestBody User loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
+        try {
+            User user = userService.loginUser(email, password);
+            return ResponseEntity.ok(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
     @GetMapping("/username/{username}")

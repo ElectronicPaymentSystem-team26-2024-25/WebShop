@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface ContextProviderProps {
   children: ReactNode;
@@ -12,8 +18,12 @@ const StateContext = createContext({
 });
 
 export const ContextProvider = ({ children }: ContextProviderProps) => {
-  const [userId, _setUserId] = useState<string | null>(null);
-  const [token, _setToken] = useState<string | null>(null);
+  const [userId, _setUserId] = useState<string | null>(
+    localStorage.getItem("ID")
+  );
+  const [token, _setToken] = useState<string | null>(
+    localStorage.getItem("ACCESS_TOKEN")
+  );
 
   const setUserId = (userId: string | null) => {
     _setUserId(userId);

@@ -16,11 +16,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User } from "@/models/UserModel";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import { useStateContext } from "@/contexts/ContextProvider";
 
 export default function Component() {
   const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
-
+  const { setToken } = useStateContext();
   const [registerData, setRegisterData] = useState<User>({
     username: "",
     email: "",
@@ -56,10 +57,32 @@ export default function Component() {
     }
   };
 
+  const loginUser = async (userData: {
+    email: string;
+    password: string;
+  }): Promise<User> => {
+    try {
+      const response = await axios.post<User>(
+        "http://localhost:8080/api/login",
+        userData
+      );
+      setToken(response.data.username);
+      console.log("User logined successfully:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error(
+        "Error  user:",
+        error.response ? error.response.data : error.message
+      );
+      throw error;
+    }
+  };
+
   const handleRegisterSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await registerUser(registerData);
+      const res = await registerUser(registerData);
+
       setActiveTab("login");
       toast({
         title: "Registration Successful",
@@ -71,10 +94,17 @@ export default function Component() {
     }
   };
 
-  const handleLoginSubmit = (e: FormEvent) => {
+  const handleLoginSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log("Login Data:", loginData);
-    // Add your login logic here
+    try {
+      await loginUser(loginData);
+    } catch (error) {
+      toast({
+        title: "Login failed",
+      });
+      console.error("Registration failed:", error);
+    }
   };
 
   return (

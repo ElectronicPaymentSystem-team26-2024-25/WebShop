@@ -32,4 +32,15 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public User loginUser(String email, String password) {
+        // Find user by email
+        User user = userRepository.findByEmail(email);
+        // Check if user exists and password matches
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        }
+        // Return null or throw an exception if login fails
+        throw new IllegalArgumentException("Invalid email or password");
+    }
 }

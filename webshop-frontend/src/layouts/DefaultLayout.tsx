@@ -4,7 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const DefaultLayout = () => {
   const { token, userId, setUserId, setToken } = useStateContext();
-  if (token) {
+  if (!token) {
     return <Navigate to="/login" />;
   }
   return (
