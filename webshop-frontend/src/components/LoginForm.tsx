@@ -25,6 +25,7 @@ export default function Component() {
   const [registerData, setRegisterData] = useState<User>({
     username: "",
     email: "",
+    token: null,
     password: "",
   });
   const [loginData, setLoginData] = useState({
@@ -43,7 +44,7 @@ export default function Component() {
   const registerUser = async (userData: User): Promise<User> => {
     try {
       const response = await axios.post<User>(
-        "http://localhost:8080/api/register",
+        "http://localhost:8080/auth/signup",
         userData
       );
       console.log("User registered successfully:", response.data);
@@ -63,10 +64,10 @@ export default function Component() {
   }): Promise<User> => {
     try {
       const response = await axios.post<User>(
-        "http://localhost:8080/api/login",
+        "http://localhost:8080/auth/login",
         userData
       );
-      setToken(response.data.username);
+      setToken(response.data.token);
       console.log("User logined successfully:", response.data);
       return response.data;
     } catch (error: any) {
@@ -82,7 +83,7 @@ export default function Component() {
     e.preventDefault();
     try {
       const res = await registerUser(registerData);
-
+      console.log(JSON.stringify(res));
       setActiveTab("login");
       toast({
         title: "Registration Successful",
