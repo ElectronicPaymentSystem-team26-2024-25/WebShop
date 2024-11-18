@@ -20,7 +20,7 @@ import {
 // Define the prop types
 interface ServiceCardProps {
   name: string | null;
-  description: string | null;
+  description: string[] | null;
   price: string | null;
   plan: string | null;
 }
@@ -31,12 +31,20 @@ export function ServiceCard({
   plan,
 }: ServiceCardProps) {
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
+    <Card className="w-[350px] max-w-60 min-h-full">
+      <CardHeader className="flex-1 flex">
         <CardTitle className="items-center w-full text-center text-xl">
           {name}
         </CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <div className="items-center text-left ml-6">
+          {description && description.length > 0 ? (
+            description.map((pro, index) => (
+              <CardDescription key={index}>*{pro}</CardDescription>
+            ))
+          ) : (
+            <CardDescription>No description available</CardDescription>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <form>
@@ -48,15 +56,16 @@ export function ServiceCard({
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem value="next">One time (One month)</SelectItem>
-                  <SelectItem value="sveltekit">Monthly</SelectItem>
-                  <SelectItem value="astro">Yearly</SelectItem>
+                  <SelectItem value="next">One year (One time)</SelectItem>
+                  <SelectItem value="sveltekit">
+                    Yearly (Subscription)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="name">Price</Label>
-              <Input id="name" value={price!} disabled />
+              <Input id="name" value={price || "N/A"} disabled />
             </div>
           </div>
         </form>

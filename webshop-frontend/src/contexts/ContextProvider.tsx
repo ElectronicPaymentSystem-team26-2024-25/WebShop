@@ -22,7 +22,7 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
     localStorage.getItem("ID")
   );
   const [token, _setToken] = useState<string | null>(
-    localStorage.getItem("ACCESS_TOKEN")
+    localStorage.getItem("ACCESS_TOKEN") //|| "dok radim front"
   );
 
   const setUserId = (userId: string | null) => {
