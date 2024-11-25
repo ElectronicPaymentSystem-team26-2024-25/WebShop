@@ -5,6 +5,15 @@ public class LoginResponse {
     private String token;
 
     private long expiresIn;
+    private Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     // Getters
     public String getToken() {

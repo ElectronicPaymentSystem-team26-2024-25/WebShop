@@ -11,6 +11,9 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import axiosClient from "@/axios-client";
+import { useStateContext } from "@/contexts/ContextProvider";
+import axios from "axios";
 
 interface BillingOption {
   id: string;
@@ -23,38 +26,94 @@ interface ServiceOfferCardProps {
   description: string[];
   billingOptions: BillingOption[];
   ctaText: string;
-  onCtaClick: (selectedOption: BillingOption) => void;
 }
 
 export default function ServiceOfferCard({
-  title = "Premium Plan",
+  title = "Telecom Service Plan",
   description = [
-    "Access to all premium features",
-    "24/7 customer support",
-    "Unlimited storage",
+    "Unlimited nationwide calls",
+    "Fast fiber internet",
+    "Free installation and 24/7 support",
   ],
   billingOptions = [
-    { id: "once", label: "One time", price: 29 },
-    { id: "annually", label: "Annually", price: 290 },
+    { id: "monthly", label: "Monthly Subscription", price: 29.99 },
+    { id: "annually", label: "Annual Subscription", price: 299.99 },
   ],
-  ctaText = "Get Started",
-  onCtaClick = () => {},
+  ctaText = "Subscribe Now",
 }: ServiceOfferCardProps) {
   const [selectedBilling, setSelectedBilling] = useState<string>(
     billingOptions[0].id
   );
-
-  const handleCtaClick = () => {
+  const { userId } = useStateContext();
+  // Create order based on the selected billing option
+  const createOrder = async () => {
+    // Find the selected billing option
     const selectedOption = billingOptions.find(
       (option) => option.id === selectedBilling
     );
-    if (selectedOption) {
-      onCtaClick(selectedOption);
+
+    if (!selectedOption) {
+      console.error("Selected billing option not found.");
+      return;
+    }
+
+    // Construct the order data dynamically
+    const orderData = {
+      orderNumber: `ORD${Math.floor(Math.random() * 100000)}`,
+      totalAmount: selectedOption.price,
+      currency: "USD", // Adjust if needed
+      status: "PENDING",
+      user: {
+        id: userId,
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/orders",
+        orderData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const paymentResponse = response.data; // Assuming the payment response contains the URL
+      if (paymentResponse.paymentUrl) {
+        // Calculate the position to center the popup on the screen
+        const width = 800;
+        const height = 600;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+
+        // Open the payment URL in a centered popup window
+        window.open(
+          paymentResponse.paymentUrl,
+          "_blank",
+          `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+        );
+      } else {
+        console.error("Payment URL not found in response.");
+      }
+      console.log("Order created successfully:", response.data);
+    } catch (error) {
+      console.error("Error creating order:", error);
     }
   };
 
+  const handleCtaClick = () => {
+    createOrder();
+  };
+
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+
   return (
-    <Card className="w-full max-w-60 mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-lg">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center">
           {title}
@@ -74,7 +133,7 @@ export default function ServiceOfferCard({
         <RadioGroup
           value={selectedBilling}
           onValueChange={setSelectedBilling}
-          className="flex flex-col space-y-2"
+          className="flex flex-col space-y-3"
         >
           {billingOptions.map((option) => (
             <div key={option.id} className="flex items-center space-x-2">
@@ -82,7 +141,7 @@ export default function ServiceOfferCard({
               <Label htmlFor={option.id} className="flex-grow">
                 {option.label}
               </Label>
-              <span className="font-bold">${option.price}</span>
+              <span className="font-bold">{formatPrice(option.price)}</span>
             </div>
           ))}
         </RadioGroup>

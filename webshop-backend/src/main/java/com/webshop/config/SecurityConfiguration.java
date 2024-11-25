@@ -35,7 +35,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS and use the defined source
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Allow requests to "/auth/**"
+                        .requestMatchers("/**").permitAll() // Allow requests to "/auth/**"
                         .anyRequest().authenticated() // All other requests must be authenticated
                 )
                 .sessionManagement(session -> session
@@ -52,7 +52,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Allow requests from your frontend
-        configuration.setAllowedMethods(List.of("GET", "POST")); // Allowed HTTP methods
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // Allowed headers
         configuration.setAllowCredentials(true); // Allow cookies or authorization headers
 

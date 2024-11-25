@@ -7,6 +7,8 @@ import com.webshop.dto.RegisterUserDto;
 import com.webshop.response.LoginResponse;
 import com.webshop.service.AuthenticationService;
 import com.webshop.service.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     private final JwtService jwtService;
 
     private final AuthenticationService authenticationService;
@@ -39,7 +42,8 @@ public class AuthenticationController {
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
-
+        loginResponse.setId(authenticatedUser.getId());
+        System.out.println(loginResponse.getId());
         return ResponseEntity.ok(loginResponse);
     }
 }

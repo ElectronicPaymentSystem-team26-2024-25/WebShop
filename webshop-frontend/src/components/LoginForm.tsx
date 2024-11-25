@@ -21,7 +21,7 @@ import { useStateContext } from "@/contexts/ContextProvider";
 export default function Component() {
   const [activeTab, setActiveTab] = useState("login");
   const { toast } = useToast();
-  const { setToken } = useStateContext();
+  const { setToken, setUserId } = useStateContext();
   const [registerData, setRegisterData] = useState<User>({
     username: "",
     email: "",
@@ -67,6 +67,7 @@ export default function Component() {
         "http://localhost:8080/auth/login",
         userData
       );
+      setUserId(response.data.id!);
       setToken(response.data.token);
       console.log("User logined successfully:", response.data);
       return response.data;

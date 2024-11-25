@@ -6,6 +6,7 @@ import HomePage from "./views/HomePage.tsx";
 import ServicesPage from "./views/ServicesPage.tsx";
 import NotFoundPage from "./views/NotFoundPage.tsx";
 import CustomerServicePage from "./views/CustomerServicePage.tsx";
+import SuccessPage from "./views/SucessPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/customer-service",
         element: <CustomerServicePage />,
+      },
+      {
+        path: "/successpage/:id",
+        element: <SuccessPage />,
       },
     ],
   },
