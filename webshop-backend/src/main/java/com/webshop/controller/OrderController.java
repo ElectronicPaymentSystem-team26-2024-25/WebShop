@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,16 +37,16 @@ public class OrderController {
         Order o = orderService.createOrder(order);
         //setting payment request for psp
         PaymentRequest pr = new PaymentRequest();
-        pr.setAmount(order.getTotalAmount());
+        pr.setAmount((int) Math.round(order.getTotalAmount()));
         pr.setMerchantPassword(merchantPassword);
         pr.setMerchantId(merchantId);
         pr.setMerchantOrderId(o.getId());
 
         //psp poziv
         //Note: podesi ime response varijable za link i ovde i na frontu
-        /**
-         *
-        String paymentUrl = "http://localhost:8085/payment/execute-payment";//
+
+
+        String paymentUrl = "http://localhost:8080/payment/create-order";//
         try {
             ResponseEntity<PspDTO> PspDTO = restTemplate.postForEntity(paymentUrl, pr, PspDTO.class);
             if (PspDTO.getStatusCode().is2xxSuccessful()) {//uspesno
@@ -55,8 +56,6 @@ public class OrderController {
         } catch (Exception e) {//greska
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Or return a custom error response if needed
         }
-         */
-        return  new ResponseEntity<>(new PspDTO(),HttpStatus.OK);//samo za test
     }
     @PostMapping("/order-status")
     public ResponseEntity<?> orderCompletion(@RequestBody PspDTO pspDto) {

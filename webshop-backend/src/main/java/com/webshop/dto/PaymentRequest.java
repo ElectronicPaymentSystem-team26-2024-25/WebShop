@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class PaymentRequest {
     private String merchantId;
     private String merchantPassword;
-    private double amount;
+    private int amount;
     private Long merchantOrderId;
     private LocalDateTime merchantTimestamp;
     private String successUrl;
@@ -31,11 +31,11 @@ public class PaymentRequest {
         this.merchantPassword = merchantPassword;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
