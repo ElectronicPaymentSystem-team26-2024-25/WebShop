@@ -3,7 +3,7 @@ package com.webshop.dto;
 public class PspDTO {
     private Long orderId;
     private String orderStatus;
-    private String pspUrl;
+    private String url;
     public PspDTO(){}
 
     public Long getOrderId() {
@@ -23,10 +23,10 @@ public class PspDTO {
     }
 
     public String getPspUrl() {
-        return pspUrl;
+        return url;
     }
 
     public void setPspUrl(String pspUrl) {
-        this.pspUrl = pspUrl;
+        this.url = pspUrl;
     }
 }

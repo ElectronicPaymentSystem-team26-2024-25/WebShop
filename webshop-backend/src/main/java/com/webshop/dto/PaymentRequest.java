@@ -6,7 +6,7 @@ public class PaymentRequest {
     private String merchantId;
     private String merchantPassword;
     private int amount;
-    private Long merchantOrderId;
+    private int merchantOrderId;
     private LocalDateTime merchantTimestamp;
     private String successUrl;
     private String failedUrl;
@@ -39,11 +39,11 @@ public class PaymentRequest {
         this.amount = amount;
     }
 
-    public Long getMerchantOrderId() {
+    public int getMerchantOrderId() {
         return merchantOrderId;
     }
 
-    public void setMerchantOrderId(Long merchantOrderId) {
+    public void setMerchantOrderId(int merchantOrderId) {
         this.merchantOrderId = merchantOrderId;
     }
 

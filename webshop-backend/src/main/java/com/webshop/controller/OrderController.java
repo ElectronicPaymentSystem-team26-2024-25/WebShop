@@ -3,6 +3,7 @@ package com.webshop.controller;
 import com.webshop.dto.OrderDTO;
 import com.webshop.dto.PaymentRequest;
 import com.webshop.dto.PspDTO;
+import com.webshop.dto.UrlDto;
 import com.webshop.model.Order;
 import com.webshop.service.OrderService;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/orders/order-status")
+@RequestMapping("/api/orders")
 public class OrderController {
 
     private final RestTemplate restTemplate;
@@ -33,14 +34,14 @@ public class OrderController {
         this.orderService = orderService;
     }
     @PostMapping
-    public ResponseEntity<PspDTO> createOrder(@RequestBody Order order) {
+    public ResponseEntity<UrlDto> createOrder(@RequestBody Order order) {
         Order o = orderService.createOrder(order);
         //setting payment request for psp
         PaymentRequest pr = new PaymentRequest();
         pr.setAmount((int) Math.round(order.getTotalAmount()));
         pr.setMerchantPassword(merchantPassword);
         pr.setMerchantId(merchantId);
-        pr.setMerchantOrderId(o.getId());
+        pr.setMerchantOrderId(o.getId().intValue());
 
         //psp poziv
         //Note: podesi ime response varijable za link i ovde i na frontu
@@ -48,7 +49,7 @@ public class OrderController {
 
         String paymentUrl = "http://localhost:8080/payment/create-order";//
         try {
-            ResponseEntity<PspDTO> PspDTO = restTemplate.postForEntity(paymentUrl, pr, PspDTO.class);
+            ResponseEntity<UrlDto> PspDTO = restTemplate.postForEntity(paymentUrl, pr, UrlDto.class);
             if (PspDTO.getStatusCode().is2xxSuccessful()) {//uspesno
                 return ResponseEntity.ok(PspDTO.getBody());
             } else return ResponseEntity.status(PspDTO.getStatusCode()).body(PspDTO.getBody());
@@ -65,7 +66,7 @@ public class OrderController {
         Order order = optionalOrder.get(); // Safely retrieve the Order object
 
         orderService.updateOrderStatus(order.getId(),pspDto.getOrderStatus());
-        return ResponseEntity.ok("Order status updated successfully");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

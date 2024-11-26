@@ -80,7 +80,7 @@ export default function ServiceOfferCard({
       );
 
       const paymentResponse = response.data; // Assuming the payment response contains the URL
-      if (paymentResponse.paymentUrl) {
+      if (paymentResponse.url) {
         // Calculate the position to center the popup on the screen
         const width = 800;
         const height = 600;
@@ -89,7 +89,7 @@ export default function ServiceOfferCard({
 
         // Open the payment URL in a centered popup window
         window.open(
-          paymentResponse.paymentUrl,
+          paymentResponse.url,
           "_blank",
           `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
         );
