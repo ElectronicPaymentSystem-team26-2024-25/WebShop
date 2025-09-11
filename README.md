@@ -5,13 +5,13 @@ In order for https to work, following steps are needed:
 
 2. Import mkcert CA into java truststore (run powershell as admin for this):
 
-   2.1. If java truststore is in regular path, run **mkcert -CAROOT** to find the path and then:
+   2.1. If java truststore is in regular path, run **mkcert -CAROOT** to find the path and then:  
          **keytool -importcert -trustcacerts -cacerts -alias mkcert-rootCA -file "$(mkcert -CAROOT)\rootCA.pem" -storepass changeit**
 
-    2.2. If java truststore is in jdk path, find the path of jdk and import mkcert root there.
-         To find jdk path of current spring application, add **System.out.println(System.getProperty("java.home"));** in main.
-         To find path of mkcert, run **mkcert -CAROOT** in powershell (it is probably: C:\Users\<YourName>\AppData\Local\mkcert\)
-         Example:
+    2.2. If java truststore is in jdk path, find the path of jdk and import mkcert root there.  
+         To find jdk path of current spring application, add **System.out.println(System.getProperty("java.home"));** in main.  
+         To find path of mkcert, run **mkcert -CAROOT** in powershell (it is probably: C:\Users\<YourName>\AppData\Local\mkcert\)  
+         Example:  
          **keytool -importcert -trustcacerts -keystore "C:\Users\Admin\.jdks\temurin-21.0.5\lib\security\cacerts" -alias mkcert-rootCA -file "$(mkcert -CAROOT)\rootCA.pem" -storepass changeit**
 
          Note: it is possible that different spring applications have different truststores, if they use different jdks, in that case command should be executed multiple times, for every jdk.
