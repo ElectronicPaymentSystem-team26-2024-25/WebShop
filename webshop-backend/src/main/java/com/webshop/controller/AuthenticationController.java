@@ -1,6 +1,5 @@
 package com.webshop.controller;
 
-
 import com.webshop.model.User;
 import com.webshop.dto.LoginUserDto;
 import com.webshop.dto.RegisterUserDto;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     private final JwtService jwtService;
-
     private final AuthenticationService authenticationService;
 
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
@@ -38,9 +36,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
-
         String jwtToken = jwtService.generateToken(authenticatedUser);
-
         LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
         loginResponse.setId(authenticatedUser.getId());
         System.out.println(loginResponse.getId());

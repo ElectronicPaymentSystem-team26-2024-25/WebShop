@@ -21,7 +21,7 @@ const SuccessPage: React.FC = () => {
 
     // Fetch order data by ID
     axios
-      .get<Order>(`http://localhost:8075/api/orders/${id}`)
+      .get<Order>(`https://localhost:8075/api/orders/${id}`)
       .then((response) => {
         setOrder(response.data);
         console.log(response.data);

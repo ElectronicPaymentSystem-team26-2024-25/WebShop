@@ -47,7 +47,7 @@ public class OrderController {
         //Note: podesi ime response varijable za link i ovde i na frontu
 
 
-        String paymentUrl = "http://localhost:8080/payment/create-order";//
+        String paymentUrl = "https://localhost:8080/payment/create-order";//
         try {
             ResponseEntity<UrlDto> PspDTO = restTemplate.postForEntity(paymentUrl, pr, UrlDto.class);
             if (PspDTO.getStatusCode().is2xxSuccessful()) {//uspesno

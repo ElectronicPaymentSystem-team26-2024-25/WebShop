@@ -44,7 +44,7 @@ export default function Component() {
   const registerUser = async (userData: User): Promise<User> => {
     try {
       const response = await axios.post<User>(
-        "http://localhost:8075/auth/signup",
+        "https://localhost:8075/auth/signup",
         userData
       );
       console.log("User registered successfully:", response.data);
@@ -64,7 +64,7 @@ export default function Component() {
   }): Promise<User> => {
     try {
       const response = await axios.post<User>(
-        "http://localhost:8075/auth/login",
+        "https://localhost:8075/auth/login",
         userData
       );
       setUserId(response.data.id!);
